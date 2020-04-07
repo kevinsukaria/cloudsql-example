@@ -110,15 +110,15 @@ def index():
         for row in recent_votes:
             votes.append({"candidate": row[0], "time_cast": row[1]})
 
-        stmt = sqlalchemy.text(
-            "SELECT COUNT(vote_id) FROM votes WHERE candidate=:candidate"
-        )
+        # stmt = sqlalchemy.text(
+        #     "SELECT COUNT(vote_id) FROM votes WHERE candidate=:candidate"
+        # )
         # Count number of votes for tabs
-        conn.execute(stmt, candidate="TABS")
+        conn.execute("SELECT COUNT(vote_id) FROM votes WHERE candidate=TABS")
         tab_result = conn.fetchone()
         tab_count = tab_result[0]
         # Count number of votes for spaces
-        conn.execute(stmt, candidate="SPACES")
+        conn.execute("SELECT COUNT(vote_id) FROM votes WHERE candidate=SPACES")
         space_result = conn.fetchone()
         space_count = space_result[0]
 

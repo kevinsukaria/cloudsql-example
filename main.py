@@ -18,7 +18,7 @@ import os
 
 from flask import Flask, render_template, request, Response
 import sqlalchemy
-import pymysql
+# import pymysql
 
 
 # Remember - storing secrets in plaintext is potentially unsafe. Consider using
@@ -35,16 +35,16 @@ logger = logging.getLogger()
 # [START cloud_sql_mysql_sqlalchemy_create]
 # The SQLAlchemy engine will help manage interactions, including automatically
 # managing a pool of connections to your database
-# db = sqlalchemy.create_engine(
+db = sqlalchemy.create_engine(
     # Equivalent URL:
     # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=/cloudsql/<cloud_sql_instance_name>
-    # sqlalchemy.engine.url.URL(
-    #     drivername="mysql+pymysql",
-    #     username=db_user,
-    #     password=db_pass,
-    #     database=db_name,
-    #     query={"unix_socket": "/cloudsql/{}".format(cloud_sql_connection_name)},
-    # ),
+    sqlalchemy.engine.url.URL(
+        drivername="mysql+pymysql",
+        username=db_user,
+        password=db_pass,
+        database=db_name,
+        query={"unix_socket": "/cloudsql/{}".format(cloud_sql_connection_name)},
+    ),
     # ... Specify additional properties here.
     # [START_EXCLUDE]
     # [START cloud_sql_mysql_sqlalchemy_limit]
@@ -72,17 +72,17 @@ logger = logging.getLogger()
     # pool_recycle=1800,  # 30 minutes
     # [END cloud_sql_mysql_sqlalchemy_lifetime]
     # [END_EXCLUDE]
-# )
+)
 # [END cloud_sql_mysql_sqlalchemy_create]
 
-socket = '/cloudsql/tweets-streamer:asia-east2:tes'
-konek = pymysql.connect(
-        # host='35.220.176.195',
-        unix_socket=socket,
-        user='root',
-        password='123qweasd',
-        database='tweets'
-    )
+# socket = '/cloudsql/tweets-streamer:asia-east2:tes'
+# konek = pymysql.connect(
+#         # host='35.220.176.195',
+#         unix_socket=socket,
+#         user='root',
+#         password='123qweasd',
+#         database='tweets'
+#     )
 
 
 
@@ -90,7 +90,7 @@ konek = pymysql.connect(
 @app.before_first_request
 def create_tables():
     # Create tables (if they don't already exist)
-    with konek.cursor() as conn:
+    with db.connect() as conn:
         conn.execute(
             "CREATE TABLE IF NOT EXISTS votes "
             "( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, "
@@ -101,7 +101,7 @@ def create_tables():
 @app.route("/", methods=["GET"])
 def index():
     votes = []
-    with konek.cursor() as conn:
+    with db.connect() as conn:
         # Execute the query and fetch all results
         recent_votes = conn.execute(
             "SELECT candidate, time_cast FROM votes " "ORDER BY time_cast DESC LIMIT 5"

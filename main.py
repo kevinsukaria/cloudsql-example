@@ -114,11 +114,11 @@ def index():
         #     "SELECT COUNT(vote_id) FROM votes WHERE candidate=:candidate"
         # )
         # Count number of votes for tabs
-        conn.execute("SELECT COUNT(vote_id) FROM votes WHERE candidate=TABS")
+        conn.execute("SELECT COUNT(vote_id) FROM votes WHERE candidate='TABS'")
         tab_result = conn.fetchone()
         tab_count = tab_result[0]
         # Count number of votes for spaces
-        conn.execute("SELECT COUNT(vote_id) FROM votes WHERE candidate=SPACES")
+        conn.execute("SELECT COUNT(vote_id) FROM votes WHERE candidate='SPACES'")
         space_result = conn.fetchone()
         space_count = space_result[0]
 

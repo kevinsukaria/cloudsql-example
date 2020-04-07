@@ -19,7 +19,7 @@ import os
 from flask import Flask, render_template, request, Response
 import sqlalchemy
 
-# import pymysql
+import pymysql
 
 
 # Remember - storing secrets in plaintext is potentially unsafe. Consider using
